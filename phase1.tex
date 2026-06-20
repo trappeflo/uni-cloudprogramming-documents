@@ -1,0 +1,130 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[a4paper,top=2cm,bottom=2cm,left=2cm,right=2cm]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{iugreen}{RGB}{109,169,0}
+
+% kompakte Abstände
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\titlespacing*{\section}{0pt}{6pt}{2pt}
+\titlespacing*{\subsection}{0pt}{4pt}{1pt}
+\titleformat{\section}{\normalfont\large\bfseries\color{iugreen}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\setlist[itemize]{leftmargin=1.4em,topsep=1pt,itemsep=0.5pt,parsep=0pt}
+
+\linespread{1.05}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Konzeption: Statische Unternehmenswebsite in der Cloud}\\[2pt]
+{\small Cloud Programming (DLBSEPCP01\_D) -- Aufgabe 1, Konzeptionsphase}
+\end{center}
+
+\vspace{-2pt}
+
+\section{Szenario \& Anforderungsanalyse}
+
+Ein international tätiges Unternehmen benötigt eine öffentliche Unternehmenswebsite, die als
+erste Anlaufstelle und Aushängeschild dient. Da Besucher weltweit und rund um die Uhr zugreifen,
+führt jeder Ausfall oder jede spürbare Verzögerung unmittelbar zu Reputations- und potenziellem
+Geschäftsverlust. Daraus folgt die Vorgabe einer \textbf{weltweit hochverfügbaren} Bereitstellung
+mit einem Ziel-SLA von $\geq 99{,}9\,\%$. Die Website selbst ist eine einfache statische
+HTML-Seite (Hello-World-Prototyp); bewertet wird nicht die Webentwicklung, sondern die robuste,
+skalierbare und reproduzierbare Cloud-Infrastruktur.
+
+\textbf{Funktionale Anforderungen:} statisches Hosting einer HTML-Datei, Erreichbarkeit über
+HTTPS, eigene Custom Domain (\texttt{cloud.trappeonline.xyz}), globale Erreichbarkeit ohne
+spürbare Ladezeiten.
+
+\textbf{Nicht-funktionale Anforderungen:} Hochverfügbarkeit ohne Single Point of Failure;
+automatische Skalierung von Lastspitzen ohne manuellen Eingriff; minimale Ladezeiten unabhängig
+vom Standort (Edge-Auslieferung); Schutz vor DDoS- und Layer-7-Angriffen (WAF); Kosteneffizienz
+durch serverlose bzw. managed Dienste (Pay-per-Use, keine Leerlaufkosten); vollständige
+Reproduzierbarkeit der Infrastruktur als Infrastructure-as-Code (IaC).
+
+\textbf{Rahmenbedingungen:} Budget von 100\,USD (Azure for Students). Azure Front Door und Azure
+CDN Classic sind für Student-Abos technisch gesperrt -- eine zentrale Einschränkung, die die
+Architekturwahl direkt prägt.
+
+\textbf{Hinweis zur Skalierung:} Da es sich um rein statische Inhalte handelt, existiert bewusst
+kein klassisches Backend. Die in der Aufgabe geforderte automatische Skalierung wird stattdessen
+durch den serverlosen Hosting-Dienst und die vorgelagerte CDN-Edge-Schicht übernommen, die
+Lastspitzen ohne Kapazitätsplanung abfangen.
+
+\section{Architekturentscheidung}
+
+\textbf{Cloud-Anbieter -- Microsoft Azure.} AWS erfordert eine Kreditkarte zur Registrierung,
+Google Cloud bietet weniger passendes Kursmaterial. Azure stellt über \emph{Azure for Students}
+Guthaben ohne Kreditkarte bereit und bietet einen passenden Service-Stack -- daher als
+Hosting-Basis gewählt.
+
+\textbf{Verworfene Ansätze.} Der ursprüngliche Plan \emph{Azure Storage + Azure Front Door}
+(globale PoPs, WAF, HTTPS) scheitert an der Sperre von Front Door für Student-Abos. Der Fallback
+\emph{Azure CDN Classic} entfällt, da Microsoft die Erstellung neuer Classic-Profile abgekündigt
+hat. \emph{Azure Static Web Apps allein} ist verfügbar und kostenlos, bietet aber eine
+Black-Box-CDN-Schicht ohne konfigurierbare WAF und ohne granulare Kontrolle über Caching und
+Sicherheitsregeln.
+
+\textbf{Gewählte Architektur -- Azure Static Web Apps + Cloudflare.} Die finale Lösung kombiniert
+\textbf{Azure Static Web Apps} (Free Tier) als Hosting-Plattform mit \textbf{Cloudflare}
+(Free Plan) als vorgelagerter CDN- und Sicherheitsschicht. Cloudflare betreibt mit über 300 PoPs
+eines der größten CDN-Netzwerke weltweit und liefert WAF (OWASP Top 10), DDoS-Schutz auf Layer
+3/4/7, automatische HTTPS-Terminierung sowie die DNS-Verwaltung der Custom Domain. So werden alle
+ursprünglichen Anforderungen erfüllt, obwohl Azure-native CDN-Dienste im Student-Abo nicht
+verfügbar sind. Die Hinzunahme von Cloudflare ist damit keine willkürliche Anbieterwahl, sondern
+eine technisch erzwungene, bewusst gewählte Ergänzung.
+
+\textbf{Sicherheit / Origin-Isolation.} Damit Besucher nicht an Cloudflare vorbei direkt den
+\texttt{*.azurestaticapps.net}-Endpoint aufrufen und so die WAF umgehen, wird der Origin-Zugriff
+abgesichert (Beschränkung auf Cloudflare-Traffic). Secrets und Zugriffstoken werden nicht im
+IaC-Code hinterlegt, sondern über Variablen bzw. Umgebungswerte verwaltet.
+
+\textbf{Kosteneffizienz.} Beide Dienste bleiben im kostenlosen Kontingent und erzeugen keine
+Leerlaufkosten; die Infrastruktur skaliert elastisch (hoch \emph{und} runter). Nach dem
+Deployment-Test wird die Infrastruktur per \texttt{terraform destroy} vollständig abgebaut.
+
+\section{Komponenten \& Datenfluss}
+
+\textbf{Azure Static Web Apps} hostet die \texttt{index.html}, ist vollständig serverlos,
+hochverfügbar über die globale Azure-Infrastruktur und stellt einen öffentlichen
+HTTPS-Endpoint bereit. \textbf{Cloudflare} sitzt als Edge davor, leitet Besucher zum
+nächstgelegenen PoP, terminiert HTTPS, filtert Angriffe (WAF/DDoS) und verwaltet die Custom-Domain.
+\textbf{Terraform} verwaltet beide Provider (\texttt{azurerm} + \texttt{cloudflare}) und macht
+Resource Group, Static Web App und DNS-Record vollständig reproduzierbar.
+
+\textit{Datenfluss:} Eine HTTPS-Anfrage an \texttt{cloud.trappeonline.xyz} erreicht den
+nächstgelegenen Cloudflare-PoP. Bei Cache-Hit erfolgt die Auslieferung direkt vom Edge; die
+WAF prüft jede Anfrage und blockiert bösartige Muster. Nur bei Cache-Miss wird die Anfrage an den
+Azure-Origin weitergeleitet, der \texttt{index.html} zurückgibt -- die Antwort fließt über den
+Cloudflare-Edge zum Besucher zurück.
+
+\vspace{4pt}
+
+% ---------------------------------------------------------------
+% PLATZHALTER FÜR C4-DIAGRAMM
+% Diagramm als Bild exportieren (PNG/SVG/PDF) und hier einbinden:
+% \includegraphics[width=\linewidth]{c4-diagramm.png}
+% ---------------------------------------------------------------
+\begin{center}
+\fbox{\parbox[c][3.5cm][c]{0.95\linewidth}{\centering
+\textbf{[ C4-/Komponenten-Diagramm hier einfügen ]}\\[2pt]
+\small Komponenten-Interaktion und Datenfluss (Besucher $\rightarrow$ Cloudflare Edge
+$\rightarrow$ Azure Static Web Apps).\\
+Alle Abkürzungen ausgeschrieben, je Box: Cloud-Dienst + eigener Inhalt
+(z.\,B. \texttt{index.html}).}}
+\end{center}
+
+\end{document}
