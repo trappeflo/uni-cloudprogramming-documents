@@ -13,118 +13,88 @@
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
 
-\definecolor{iugreen}{RGB}{109,169,0}
+\definecolor{iugreen}{RGB}{0,169,160}
 
-% kompakte Abstände
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{4pt}
-\titlespacing*{\section}{0pt}{6pt}{2pt}
-\titlespacing*{\subsection}{0pt}{4pt}{1pt}
+\setlength{\parskip}{3pt}
+\titlespacing*{\section}{0pt}{7pt}{2pt}
+\titlespacing*{\subsection}{0pt}{5pt}{1pt}
 \titleformat{\section}{\normalfont\large\bfseries\color{iugreen}}{\thesection.}{0.5em}{}
-\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.5em}{}
-\setlist[itemize]{leftmargin=1.4em,topsep=1pt,itemsep=0.5pt,parsep=0pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{}{0em}{}
+\setlist[itemize]{leftmargin=1.3em,topsep=1pt,itemsep=1pt,parsep=0pt,label=\textcolor{iugreen}{\textbullet}}
+\setlist[enumerate]{leftmargin=1.5em,topsep=1pt,itemsep=1pt,parsep=0pt}
 
-\linespread{1.05}
+\linespread{1.04}
+
+\newcommand{\lbl}[1]{\textbf{#1:}\;}
 
 \begin{document}
+\pagestyle{empty}
 
 \begin{center}
-{\Large\bfseries Konzeption: Statische Unternehmenswebsite in der Cloud}\\[2pt]
-{\small Cloud Programming (DLBSEPCP01\_D) -- Aufgabe 1, Konzeptionsphase}
+{\Large\bfseries Cloud Programming (DLBSEPCP01\_D)  Aufgabe 1, Konzeptionsphase}\\[4pt]
+{\small Florian Zimmermann \quad\textbar\quad Matrikelnummer 92012248}
 \end{center}
 
-\vspace{-2pt}
+\vspace{2pt}
 
-\section{Szenario \& Anforderungsanalyse}
+\section{Szenario und Anforderungen}
 
-Ein international tätiges Unternehmen benötigt eine öffentliche Unternehmenswebsite, die als
-erste Anlaufstelle und Aushängeschild dient. Da Besucher weltweit und rund um die Uhr zugreifen,
-führt jeder Ausfall oder jede spürbare Verzögerung unmittelbar zu Reputations- und potenziellem
-Geschäftsverlust. Daraus folgt die Vorgabe einer \textbf{weltweit hochverfügbaren} Bereitstellung
-mit einem Ziel-SLA von $\geq 99{,}9\,\%$. Die Website selbst ist eine einfache statische
-HTML-Seite (Hello-World-Prototyp); bewertet wird nicht die Webentwicklung, sondern die robuste,
-skalierbare und reproduzierbare Cloud-Infrastruktur.
+Ein international tätiges Unternehmen benötigt eine öffentliche Website.
+Besucher greifen weltweit und rund um die Uhr zu. Jeder Ausfall oder jede Verzögerung
+bedeutet Reputationsschaden und Geschäftsverlust. Daraus folgt die Vorgabe einer weltweit
+hochverfügbaren Bereitstellung.
 
-\textbf{Funktionale Anforderungen:} statisches Hosting einer HTML-Datei, Erreichbarkeit über
-HTTPS, eigene Custom Domain (\texttt{cloud.trappeonline.xyz}), globale Erreichbarkeit ohne
-spürbare Ladezeiten.
+\subsection{Funktionale Anforderungen}
+\begin{itemize}
+  \item Statisches Hosting einer HTML-Datei, öffentlich erreichbar
+  \item Erreichbarkeit über HTTPS
+  \item Globale Erreichbarkeit ohne spürbare Ladezeiten
+\end{itemize}
 
-\textbf{Nicht-funktionale Anforderungen:} Hochverfügbarkeit ohne Single Point of Failure;
-automatische Skalierung von Lastspitzen ohne manuellen Eingriff; minimale Ladezeiten unabhängig
-vom Standort (Edge-Auslieferung); Schutz vor DDoS- und Layer-7-Angriffen (WAF); Kosteneffizienz
-durch serverlose bzw. managed Dienste (Pay-per-Use, keine Leerlaufkosten); vollständige
-Reproduzierbarkeit der Infrastruktur als Infrastructure-as-Code (IaC).
+\subsection{Nicht-funktionale Anforderungen}
+\begin{itemize}
+  \item \lbl{Hochverfügbarkeit} 24/7 Betrieb, Verfügbarkeit $\geq 99{,}9\,\%$
+  \item \lbl{Automatische Skalierung} Skalierung bei Last, keine manuellen Eingriffe nötig 
+  \item \lbl{Performance} minimale Ladezeiten
+  \item \lbl{Sicherheit} Schutz vor DDoS- und Layer-7-Angriffen
+  \item \lbl{Kosteneffizienz} serverlose / managed Dienste, Pay-per-Use
+  \item \lbl{Reproduzierbarkeit} gesamte Infrastruktur als Infrastructure as Code (IaC)
+\end{itemize}
 
-\textbf{Rahmenbedingungen:} Budget von 100\,USD (Azure for Students). Azure Front Door und Azure
-CDN Classic sind für Student-Abos technisch gesperrt -- eine zentrale Einschränkung, die die
-Architekturwahl direkt prägt.
+\section{Architektur}
 
-\textbf{Hinweis zur Skalierung:} Da es sich um rein statische Inhalte handelt, existiert bewusst
-kein klassisches Backend. Die in der Aufgabe geforderte automatische Skalierung wird stattdessen
-durch den serverlosen Hosting-Dienst und die vorgelagerte CDN-Edge-Schicht übernommen, die
-Lastspitzen ohne Kapazitätsplanung abfangen.
+\subsection{Cloud-Anbieter: Microsoft Azure}
+\begin{itemize}
+  \item \lbl{AWS} sehr großes Angebot, aber Kreditkarte zur Registrierung nötig
+    \item \lbl{Google Cloud} gutes Free Tier, aber weniger passendes Kursmaterial
+   \item \lbl{Azure (gewählt)} Studentenguthaben (100 USD) ohne Kreditkarte, passender Service-Stack
+\end{itemize}
 
-\section{Architekturentscheidung}
+\subsection{Verworfene Ansätze}
+\begin{itemize}
+  \item \lbl{Azure Storage + Front Door} für Student-Abos gesperrt
+  \item \lbl{Static Web Apps allein} verfügbar und kostenlos, aber CDN ist eine Black Box
+\end{itemize}
 
-\textbf{Cloud-Anbieter -- Microsoft Azure.} AWS erfordert eine Kreditkarte zur Registrierung,
-Google Cloud bietet weniger passendes Kursmaterial. Azure stellt über \emph{Azure for Students}
-Guthaben ohne Kreditkarte bereit und bietet einen passenden Service-Stack -- daher als
-Hosting-Basis gewählt.
+\subsection{Gewählte Lösung: Azure Static Web Apps + Cloudflare}
+\begin{itemize}
+  \item Azure Static Web Apps als serverlose Hosting-Plattform
+  \item Cloudflare als vorgelagerte CDN- und Sicherheitsschicht:
+        300+ PoPs, WAF, DDoS-Schutz, HTTPS, DNS der Custom Domain
+\end{itemize}
 
-\textbf{Verworfene Ansätze.} Der ursprüngliche Plan \emph{Azure Storage + Azure Front Door}
-(globale PoPs, WAF, HTTPS) scheitert an der Sperre von Front Door für Student-Abos. Der Fallback
-\emph{Azure CDN Classic} entfällt, da Microsoft die Erstellung neuer Classic-Profile abgekündigt
-hat. \emph{Azure Static Web Apps allein} ist verfügbar und kostenlos, bietet aber eine
-Black-Box-CDN-Schicht ohne konfigurierbare WAF und ohne granulare Kontrolle über Caching und
-Sicherheitsregeln.
+\section{Komponenten}
 
-\textbf{Gewählte Architektur -- Azure Static Web Apps + Cloudflare.} Die finale Lösung kombiniert
-\textbf{Azure Static Web Apps} (Free Tier) als Hosting-Plattform mit \textbf{Cloudflare}
-(Free Plan) als vorgelagerter CDN- und Sicherheitsschicht. Cloudflare betreibt mit über 300 PoPs
-eines der größten CDN-Netzwerke weltweit und liefert WAF (OWASP Top 10), DDoS-Schutz auf Layer
-3/4/7, automatische HTTPS-Terminierung sowie die DNS-Verwaltung der Custom Domain. So werden alle
-ursprünglichen Anforderungen erfüllt, obwohl Azure-native CDN-Dienste im Student-Abo nicht
-verfügbar sind. Die Hinzunahme von Cloudflare ist damit keine willkürliche Anbieterwahl, sondern
-eine technisch erzwungene, bewusst gewählte Ergänzung.
-
-\textbf{Sicherheit / Origin-Isolation.} Damit Besucher nicht an Cloudflare vorbei direkt den
-\texttt{*.azurestaticapps.net}-Endpoint aufrufen und so die WAF umgehen, wird der Origin-Zugriff
-abgesichert (Beschränkung auf Cloudflare-Traffic). Secrets und Zugriffstoken werden nicht im
-IaC-Code hinterlegt, sondern über Variablen bzw. Umgebungswerte verwaltet.
-
-\textbf{Kosteneffizienz.} Beide Dienste bleiben im kostenlosen Kontingent und erzeugen keine
-Leerlaufkosten; die Infrastruktur skaliert elastisch (hoch \emph{und} runter). Nach dem
-Deployment-Test wird die Infrastruktur per \texttt{terraform destroy} vollständig abgebaut.
-
-\section{Komponenten \& Datenfluss}
-
-\textbf{Azure Static Web Apps} hostet die \texttt{index.html}, ist vollständig serverlos,
-hochverfügbar über die globale Azure-Infrastruktur und stellt einen öffentlichen
-HTTPS-Endpoint bereit. \textbf{Cloudflare} sitzt als Edge davor, leitet Besucher zum
-nächstgelegenen PoP, terminiert HTTPS, filtert Angriffe (WAF/DDoS) und verwaltet die Custom-Domain.
-\textbf{Terraform} verwaltet beide Provider (\texttt{azurerm} + \texttt{cloudflare}) und macht
-Resource Group, Static Web App und DNS-Record vollständig reproduzierbar.
-
-\textit{Datenfluss:} Eine HTTPS-Anfrage an \texttt{cloud.trappeonline.xyz} erreicht den
-nächstgelegenen Cloudflare-PoP. Bei Cache-Hit erfolgt die Auslieferung direkt vom Edge; die
-WAF prüft jede Anfrage und blockiert bösartige Muster. Nur bei Cache-Miss wird die Anfrage an den
-Azure-Origin weitergeleitet, der \texttt{index.html} zurückgibt -- die Antwort fließt über den
-Cloudflare-Edge zum Besucher zurück.
-
-\vspace{4pt}
-
-% ---------------------------------------------------------------
-% PLATZHALTER FÜR C4-DIAGRAMM
-% Diagramm als Bild exportieren (PNG/SVG/PDF) und hier einbinden:
-% \includegraphics[width=\linewidth]{c4-diagramm.png}
-% ---------------------------------------------------------------
-\begin{center}
-\fbox{\parbox[c][3.5cm][c]{0.95\linewidth}{\centering
-\textbf{[ C4-/Komponenten-Diagramm hier einfügen ]}\\[2pt]
-\small Komponenten-Interaktion und Datenfluss (Besucher $\rightarrow$ Cloudflare Edge
-$\rightarrow$ Azure Static Web Apps).\\
-Alle Abkürzungen ausgeschrieben, je Box: Cloud-Dienst + eigener Inhalt
-(z.\,B. \texttt{index.html}).}}
-\end{center}
+\begin{itemize}
+  \item \lbl{Azure Static Web Apps} hostet index.html, serverlos, hochverfügbar,
+        öffentlicher HTTPS-Endpoint
+  \item \lbl{Cloudflare} Edge davor: nächstgelegener Point of Presence (PoP), HTTPS-Terminierung, WAF/DDoS-Filter,
+        Custom-Domain-Verwaltung
+  \item \lbl{Terraform} verwaltet beide Provider (azurerm + cloudflare)
+\end{itemize}
+\vspace{2pt}
+\enlargethispage{1.5cm}
+\includegraphics[width=\linewidth,height=5cm,keepaspectratio]{c4.drawio.png}
 
 \end{document}
