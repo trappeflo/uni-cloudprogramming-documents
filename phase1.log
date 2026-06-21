@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.7)  21 JUN 2026 18:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.7)  21 JUN 2026 19:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -369,7 +369,7 @@ Package hyperref Info: Link coloring OFF on input line 31.
 \@outlinefile=\write3
 \openout3 = `phase1.out'.
 
-LaTeX Font Info:    Trying to load font information for TS1+phv on input line 50.
+LaTeX Font Info:    Trying to load font information for TS1+phv on input line 82.
  (C:\Users\flori\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1phv.fd
 File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
@@ -377,28 +377,15 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `phv' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- (C:\Users\flori\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cmr.cfg
-File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
-)
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 57.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 57.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 57.
+ [1
 
-Overfull \hbox (13.92012pt too wide) in paragraph at lines 92--94
-[]\T1/phv/b/n/10.95 (-20) Cloudflare: \T1/phv/m/n/10.95 (-20) Ed-ge da-vor: nächst-ge-le-ge-ner Point of Pre-sence (PoP), HTTPS-Terminierung, WAF/DDoS-
- []
-
-<c4.drawio.png, id=35, 723.70375pt x 302.12875pt>
+{C:/Users/flori/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
+<c4.drawio.png, id=42, 723.70375pt x 302.12875pt>
 File: c4.drawio.png Graphic file (type png)
 <use c4.drawio.png>
-Package pdftex.def Info: c4.drawio.png  used on input line 98.
-(pdftex.def)             Requested size: 340.77025pt x 142.2633pt.
-[1
-
-{C:/Users/flori/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./c4.drawio.png>] (phase1.aux)
+Package pdftex.def Info: c4.drawio.png  used on input line 107.
+(pdftex.def)             Requested size: 483.69742pt x 201.93192pt.
+ [2 <./c4.drawio.png>] (phase1.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-04-28>
@@ -407,17 +394,17 @@ Package rerunfilecheck Info: File `phase1.out' has not changed.
 (rerunfilecheck)             Checksum: 7AB885A8545B035E938784F3F4976536;1485.
  ) 
 Here is how much of TeX's memory you used:
- 13592 strings out of 467683
- 220227 string characters out of 5414722
- 699722 words of memory out of 5000000
- 42435 multiletter control sequences out of 15000+600000
- 650973 words of font info for 100 fonts, out of 8000000 for 9000
+ 13486 strings out of 467683
+ 217887 string characters out of 5414722
+ 696722 words of memory out of 5000000
+ 42320 multiletter control sequences out of 15000+600000
+ 649430 words of font info for 105 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,5n,79p,1084b,467s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb>
-Output written on phase1.pdf (1 page, 81719 bytes).
+ 75i,5n,79p,1084b,466s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/flori/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb>
+Output written on phase1.pdf (2 pages, 56189 bytes).
 PDF statistics:
- 75 PDF objects out of 1000 (max. 8388607)
- 10 named destinations out of 1000 (max. 500000)
- 32838 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 64 PDF objects out of 1000 (max. 8388607)
+ 11 named destinations out of 1000 (max. 500000)
+ 26694 words of extra memory for PDF output out of 29859 (max. 10000000)
 

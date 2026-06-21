@@ -46,30 +46,36 @@ bedeutet Reputationsschaden und Geschäftsverlust. Daraus folgt die Vorgabe eine
 hochverfügbaren Bereitstellung.
 
 \subsection{Funktionale Anforderungen}
-\begin{itemize}
-  \item Statisches Hosting einer HTML-Datei, öffentlich erreichbar
-  \item Erreichbarkeit über HTTPS
-  \item Globale Erreichbarkeit ohne spürbare Ladezeiten
-\end{itemize}
+Die Website besteht aus einer statischen Hypertext-Datei (index.html) und muss über das
+Hypertext Transfer Protocol Secure (HTTPS) erreichbar sein. Für die Nutzer soll sie weltweit
+erreichbar sein und dabei keine spürbaren Ladezeiten aufweisen. Zur Wiedererkennung der
+Marke wird die eigene Domain (trappeonline.xyz) verwendet, deren DNS bei Cloudflare
+verwaltet wird.
 
 \subsection{Nicht-funktionale Anforderungen}
-\begin{itemize}
-  \item \lbl{Hochverfügbarkeit} 24/7 Betrieb, Verfügbarkeit $\geq 99{,}9\,\%$
-  \item \lbl{Automatische Skalierung} Skalierung bei Last, keine manuellen Eingriffe nötig 
-  \item \lbl{Performance} minimale Ladezeiten
-  \item \lbl{Sicherheit} Schutz vor DDoS- und Layer-7-Angriffen
-  \item \lbl{Kosteneffizienz} serverlose / managed Dienste, Pay-per-Use
-  \item \lbl{Reproduzierbarkeit} gesamte Infrastruktur als Infrastructure as Code (IaC)
-\end{itemize}
+An die Lösung werden mehrere nicht-funktionale Anforderungen gestellt. Sie muss
+hochverfügbar sein und einen 24/7-Betrieb mit einer Verfügbarkeit von mindestens
+99,9\,\% gewährleisten. Bei steigender Last soll sie automatisch skalieren, ohne dass
+manuelle Eingriffe nötig sind, und dabei eine hohe Performance mit minimalen
+Ladezeiten bieten. Hinsichtlich der Sicherheit ist Schutz vor Distributed Denial of
+Service (DDoS) sowie vor Layer-7-Angriffen (Angriffe auf Anwendungsebene) erforderlich. Aus
+Gründen der Kosteneffizienz kommen ausschließlich serverlose bzw. managed Dienste nach
+dem Pay-per-Use-Prinzip zum Einsatz, sodass keine Leerlaufkosten entstehen. Schließlich soll die
+gesamte Infrastruktur reproduzierbar als Infrastructure as Code (IaC) beschrieben werden.
 
 \section{Architektur}
 
 \subsection{Cloud-Anbieter: Microsoft Azure}
-\begin{itemize}
-  \item \lbl{AWS} sehr großes Angebot, aber Kreditkarte zur Registrierung nötig
-    \item \lbl{Google Cloud} gutes Free Tier, aber weniger passendes Kursmaterial
-   \item \lbl{Azure (gewählt)} Studentenguthaben (100 USD) ohne Kreditkarte, passender Service-Stack
-\end{itemize}
+Die Wahl des Cloud-Anbieters fällt auf Microsoft Azure, da dieser mit einem Guthaben von
+100 USD für Studenten sowie vielen kostenfreien Diensten eine gute Grundlage bildet. Zudem
+ist keine Kreditkarte erforderlich, und der bereits vorhandene Microsoft-Account kann genutzt
+werden. Außerdem gibt es viel Kursmaterial und zahlreiche Online-Ressourcen. Azure bietet im
+Studentenprogramm keine kostenfreien Lösungen für CDN und WAF, weshalb die Kombination mit
+Cloudflare als vorgelagerte Schicht gewählt wird. Cloudflare wird bereits für eigene Projekte
+genutzt, sodass Account und Erfahrung vorhanden sind. AWS bietet ebenfalls ein großes Angebot,
+erfordert für die Registrierung aber eine Kreditkarte und einen zusätzlichen Account; auch
+Google Cloud bietet gute kostenfreie Möglichkeiten, verlangt jedoch ebenfalls eine zusätzliche
+Registrierung. Azure ist somit die beste Wahl für die Umsetzung.
 
 \subsection{Verworfene Ansätze}
 \begin{itemize}
@@ -83,18 +89,21 @@ hochverfügbaren Bereitstellung.
   \item Cloudflare als vorgelagerte CDN- und Sicherheitsschicht:
         300+ PoPs, WAF, DDoS-Schutz, HTTPS, DNS der Custom Domain
 \end{itemize}
-
+\newpage
 \section{Komponenten}
+Die Architektur besteht aus drei Komponenten. Azure Static Web Apps ist eine
+serverlose Hosting-Plattform für statische Websites und stellt die index.html über einen
+öffentlichen HTTPS-Endpunkt bereit. Durch die globale Verteilung und das automatische
+Skalieren erfüllt der Dienst bereits die Anforderungen an Hochverfügbarkeit, Skalierung und
+Kosteneffizienz. Davor ist Cloudflare als CDN und Sicherheitsschicht vorgelagert:
+Anfragen werden über den nächstgelegenen Point of Presence (PoP) ausgeliefert, HTTPS wird
+terminiert, eine WAF sowie Distributed Denial of Service (DDoS)-Filter wehren Angriffe ab, und die
+Custom Domain wird über Cloudflare verwaltet, was Performance und Sicherheit abdeckt.
+Beschrieben und bereitgestellt wird die gesamte Infrastruktur mit Terraform als
+Infrastructure as Code (IaC), das beide Provider (azurerm und cloudflare) reproduzierbar
+provisioniert.
 
-\begin{itemize}
-  \item \lbl{Azure Static Web Apps} hostet index.html, serverlos, hochverfügbar,
-        öffentlicher HTTPS-Endpoint
-  \item \lbl{Cloudflare} Edge davor: nächstgelegener Point of Presence (PoP), HTTPS-Terminierung, WAF/DDoS-Filter,
-        Custom-Domain-Verwaltung
-  \item \lbl{Terraform} verwaltet beide Provider (azurerm + cloudflare)
-\end{itemize}
-\vspace{2pt}
-\enlargethispage{1.5cm}
-\includegraphics[width=\linewidth,height=5cm,keepaspectratio]{c4.drawio.png}
+\vspace{4pt}
+\includegraphics[width=\linewidth,height=8cm,keepaspectratio]{c4.drawio.png}
 
 \end{document}

@@ -1,0 +1,9 @@
+\babel@toc {ngerman}{}\relax 
+\contentsline {section}{\numberline {1}Szenario und Anforderungen}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Funktionale Anforderungen}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Nicht-funktionale Anforderungen}{1}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Architektur}{1}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Cloud-Anbieter: Microsoft Azure}{1}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Verworfene Ansätze}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Gewählte Lösung: Azure Static Web Apps + Cloudflare}{2}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Komponenten}{3}{section.3}%
